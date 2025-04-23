@@ -9,12 +9,17 @@ vim.keymap.set("n", "<leader>ft", function()
   Snacks.terminal("pwsh.exe")
 end, { desc = "Terminal Powershell(cwd)" })
 
--- msvc dev tools environment
-vim.keymap.set("n", "<leader>fT", function()
-  local cmd = [[ pwsh.exe -NoExit -Command "&{Import-Module """C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"""; Enter-VsDevShell c134da13 -SkipAutomaticLocation -DevCmdArguments """-arch=x64 -host_arch=x64"""}" ]]
-  local cwd = LazyVim.root().. "/build"
+local open_msvc_dev_env = function()
+  local cmd =
+    [[ pwsh.exe -NoExit -Command "&{Import-Module """C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"""; Enter-VsDevShell c134da13 -SkipAutomaticLocation -DevCmdArguments """-arch=x64 -host_arch=x64"""}" ]]
+  local cwd = LazyVim.root() .. "/build"
   if vim.fn.isdirectory(cwd) == 0 then
     cwd = LazyVim.root()
   end
   Snacks.terminal(cmd, { cwd = cwd })
-end, { desc = "Msvc Dev Environment Powershell(build)" })
+end
+
+-- msvc dev tools environment
+vim.keymap.set("n", "<leader>fT", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
+vim.keymap.set("n", "<c-/>", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
+vim.keymap.set("n", "<c-_>", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
