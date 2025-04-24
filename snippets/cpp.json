@@ -1,0 +1,38 @@
+{
+	"Define debug IC macro": {
+		"prefix": "ic_defination",
+		"body": [
+			"#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG",
+			"#define IC(...) SPDLOG_DEBUG(#__VA_ARGS__ \": {} \", __VA_ARGS__)",
+			"#include <spdlog/spdlog.h>",
+			"// spdlog::setlevel(spdlog::level::trace);"
+		],
+		"description": "Define debug IC macro"
+	},
+	"cpp helloworld": {
+		"prefix": "cpphelloworld",
+		"body": [
+			"#include <spdlog/spdlog.h>",
+			"",
+			"int main() {",
+			"    spdlog::info(\"Hello, world!\")",
+			"",
+			"    return 0;",
+			"}"
+		]
+	},
+	"cppheader": {
+		"prefix": "mycppheader",
+		"body": [
+			"/**",
+			" * Copyright © $CURRENT_YEAR Zen Shawn. All rights reserved.",
+			" * ",
+			" * @file $TM_FILENAME",
+			" * @author Zen Shawn",
+			" * @email xiaozisheng2008@hotmail.com",
+			" * @date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+			" */",
+			""
+		]
+	}
+}

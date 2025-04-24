@@ -1,0 +1,133 @@
+{
+  "cmake_common": {
+    "scope": "cmake",
+    "prefix": "mycmake_common",
+    "body": [
+      "# Copyright © $CURRENT_YEAR Zen Shawn. All rights reserved.",
+      "# Created at $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND, $CURRENT_MONTH_NAME $CURRENT_DATE, $CURRENT_YEAR",
+      "",
+      "cmake_minimum_required(VERSION 3.21)",
+      "",
+      "option(BUILD_SHARED_LIBS \"build shared libs\" OFF)",
+      "",
+      "set(CMAKE_BUILD_TYPE \"RelWithDebInfo\" CACHE STRING \"build type, Release/Debug/MinSizeRel/RelWithDebInfo\")",
+      "set(CMAKE_CXX_STANDARD 23)",
+      "set(CMAKE_CXX_STANDARD_REQUIRED TRUE)",
+      "set(CMAKE_INCLUDE_CURRENT_DIR TRUE)",
+      "set(CMAKE_POSITION_INDEPENDENT_CODE ON)",
+      "set(CMAKE_INSTALL_PREFIX \"\\${CMAKE_BINARY_DIR}/out\" CACHE PATH \"install prefix\")",
+      "project($WORKSPACE_NAME VERSION 0.1.0 DESCRIPTION \"Introduction about $WORKSPACE_NAME\")",
+      "",
+      "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \\${PROJECT_BINARY_DIR}/lib)",
+      "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \\${PROJECT_BINARY_DIR}/lib)",
+      "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \\${PROJECT_BINARY_DIR}/bin)",
+      "",
+      "if(UNIX)",
+      "  find_program(CCACHE_PROGRAM ccache)",
+      "  if(CCACHE_PROGRAM)",
+      "    set(CMAKE_C_COMPILER_LAUNCHER \"\\${CCACHE_PROGRAM}\")",
+      "    set(CMAKE_CXX_COMPILER_LAUNCHER \"\\${CCACHE_PROGRAM}\")",
+      "  endif()",
+      "endif()",
+      "",
+      "find_package(spdlog CONFIG REQUIRED)",
+      "",
+      "add_compile_options($<IF:$<CXX_COMPILER_ID:MSVC>,/W1,-Wall -Wextra>)",
+      "",
+      "add_executable(main src/main.cpp)",
+      "target_link_libraries(main PRIVATE spdlog::spdlog)",
+      "install(TARGETS main)",
+      ""
+    ]
+  },
+  "cmake_fetch_pybind11": {
+    "prefix": "my_cmake_fetch_pybind11",
+    "scope": "cmake",
+    "body": [
+      "",
+      "set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE STRING \"disable FetchContent updates\")",
+      "include(FetchContent)",
+      "FetchContent_Declare(pybind11 GIT_REPOSITORY https://github.com/pybind/pybind11.git GIT_TAG master)",
+      "FetchContent_MakeAvailable(pybind11)"
+    ]
+  },
+  "cmake_target_install_common": {
+    "prefix": "my_cmake_target_install",
+    "scope": "cmake",
+    "body": [
+      "",
+      "include(GNUInstallDirs)",
+      "install(TARGETS main EXPORT \\${PROJECT_NAME}Targets ",
+      "                     LIBRARY DESTINATION \\${CMAKE_INSTALL_LIBDIR} ",
+      "                     ARCHIVE DESTINATION \\${CMAKE_INSTALL_LIBDIR} ",
+      "                     RUNTIME DESTINATION \\${CMAKE_INSTALL_BINDIR} ",
+      "                     INCLUDES DESTINATION \\${CMAKE_INSTALL_INCLUDEDIR}) ",
+      ""
+    ]
+  },
+  "cpack_common": {
+    "prefix": "mycmake_cpack",
+    "scope": "cmake",
+    "body": [
+      "set(CPACK_PACKAGE_NAME \"\\${PROJECT_NAME}\")",
+      "set(CPACK_PACKAGE_VENDOR \"MyCompony Inc.\")",
+      "set(CPACK_PACKAGE_VERSION \\${PROJECT_VERSION}-\\${CMAKE_BUILD_TYPE})",
+      "set(CPACK_PACKAGE_CONTACT \"example@.com\")",
+      "set(CPACK_DEBIAN_PACKAGE_MAINTAINER \"example@.com\")",
+      "set(CPACK_DEBIAN_PACKAGE_DEPENDS \"cmake, gcc\")",
+      "set(CPACK_GENERATOR \"DEB\")",
+      "set(CPACK_PACKAGING_INSTALL_PREFIX \\${CMAKE_INSTALL_PREFIX})",
+      "set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA \"\\${CMAKE_SOURCE_DIR}/preinst;\\${CMAKE_SOURCE_DIR}/postinst;\\${CMAKE_SOURCE_DIR}/postrm\")",
+      "include(InstallRequiredSystemLibraries)",
+      "include(CPack)"
+    ]
+  },
+  "add_executables": {
+    "prefix": "mycmake_add_executables",
+    "scope": "cmake",
+    "body": [
+      "file(GLOB srcs CONFIGURE_DEPENDS \\${CMAKE_CURRENT_LIST_DIR}/*.cpp)",
+      "foreach(src \\${srcs})",
+      "  cmake_path(GET src STEM exe_name)",
+      "  cmake_path(GET CMAKE_CURRENT_LIST_DIR STEM dir_name)",
+      "  set(target_name \\${dir_name}-\\${exe_name})",
+      "  message(STATUS \"Building: \\${target_name} from: \\${src}\")",
+      "  add_executable(\\${target_name} \\${src})",
+      "  target_link_libraries(\\${target_name} PRIVATE \"\")",
+      "endforeach()"
+    ]
+  },
+  "add_library": {
+    "prefix": "mycmake_add_library",
+    "body": [
+      "file(GLOB_RECURSE srcs CONFIGURE_DEPENDS *.cpp *.h)",
+      "add_library(target_name \\${srcs})",
+      ""
+    ]
+  },
+  "add_uninstall": {
+    "prefix": "mycmake_add_uninstall",
+    "body": [
+      "configure_file(",
+      "\\${CMAKE_SOURCE_DIR}/CMake/CMakeUninstall.cmake.in",
+      "\\${CMAKE_BINARY_DIR}/CMakeUninstall.cmake IMMEDIATE @ONLY)",
+      "",
+      "add_custom_target(",
+      "uninstall",
+      "\"\\${CMAKE_COMMAND}\" -P",
+      "\"\\${CMAKE_BINARY_DIR}/CMakeUninstall.cmake\"",
+      ")"
+    ]
+  },
+  "find_packages": {
+    "prefix": "mycmake_find_openscenegraph",
+    "body": [
+      "find_package(OpenSceneGraph COMPONENTS osgManipulator osgDB osgGA osgUtil osgText osgViewer osgWidget osgFX REQUIRED)",
+      "",
+      "add_library(OSG INTERFACE)",
+      "target_include_directories(OSG INTERFACE \\${OPENSCENEGRAPH_INCLUDE_DIRS})",
+      "target_link_libraries(OSG INTERFACE \\${OPENSCENEGRAPH_LIBRARIES})",
+      ""
+    ]
+  }
+}

@@ -10,12 +10,28 @@ vim.keymap.set("n", "<leader>ft", function()
 end, { desc = "Terminal Powershell(cwd)" })
 
 local open_msvc_dev_env = function()
-  local cmd =
-    [[ pwsh.exe -NoExit -Command "&{Import-Module """C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"""; Enter-VsDevShell c134da13 -SkipAutomaticLocation -DevCmdArguments """-arch=x64 -host_arch=x64"""}" ]]
+  local cmd = [[ 
+    pwsh.exe -NoExit -Command 
+    "&{
+    Import-Module """C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"""; 
+    Enter-VsDevShell c134da13 -SkipAutomaticLocation -DevCmdArguments """-arch=x64 -host_arch=x64"""
+    ]]
   local cwd = LazyVim.root() .. "/build"
   if vim.fn.isdirectory(cwd) == 0 then
     cwd = LazyVim.root()
   end
+  local venv_dir = LazyVim.root() .. "/.venv"
+  if vim.fn.isdirectory(venv_dir) == 1 then
+    local activate_script = string.format("%s/Scripts/activate.ps1", venv_dir)
+    if vim.fn.filereadable(activate_script) == 1 then
+      print("python venv activate script is detected at: " .. activate_script)
+      cmd = cmd .. "; " .. activate_script
+    end
+  end
+
+  cmd = cmd .. ' }"'
+  cmd = cmd:gsub("[\r\n]", " ")
+  print("cmd: " .. cmd)
   Snacks.terminal(cmd, { cwd = cwd })
 end
 
