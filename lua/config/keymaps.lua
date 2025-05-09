@@ -24,18 +24,16 @@ local open_msvc_dev_env = function()
   if vim.fn.isdirectory(venv_dir) == 1 then
     local activate_script = string.format("%s/Scripts/activate.ps1", venv_dir)
     if vim.fn.filereadable(activate_script) == 1 then
-      print("python venv activate script is detected at: " .. activate_script)
       cmd = cmd .. "; " .. activate_script
     end
   end
 
   cmd = cmd .. ' }"'
   cmd = cmd:gsub("[\r\n]", " ")
-  print("cmd: " .. cmd)
-  Snacks.terminal(cmd, { cwd = cwd })
+  Snacks.terminal(cmd, { cwd = cwd, })
 end
 
 -- msvc dev tools environment
-vim.keymap.set("n", "<leader>fT", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
+-- vim.keymap.set("n", "<leader>fT", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
 vim.keymap.set("n", "<c-/>", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
 vim.keymap.set("n", "<c-_>", open_msvc_dev_env, { desc = "Msvc Dev Environment Powershell(build)" })
